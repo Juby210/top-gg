@@ -9,12 +9,11 @@ const DiscordBot = require('./components/DiscordBot');
 const Settings = require('./components/Settings');
 
 module.exports = class BotInfo extends Plugin {
-  async startPlugin() {
-
+  async startPlugin () {
     this.classes = {
-      ...await getModule(['headerInfo', 'nameTag']),
-      ...await getAllModules(['modal', 'inner'])[1],
-      header: (await getModule(['iconBackgroundTierNone', 'container'])).header
+      ...await getModule([ 'headerInfo', 'nameTag' ]),
+      ...await getAllModules([ 'modal', 'inner' ])[1],
+      header: (await getModule([ 'iconBackgroundTierNone', 'container' ])).header
     };
 
     Object.keys(this.classes).forEach(
@@ -23,7 +22,7 @@ module.exports = class BotInfo extends Plugin {
 
     powercord.api.settings.registerSettings('discord-bot', {
       category: 'discord-bot',
-      label: 'discord.bot',
+      label: 'top.gg',
       render: Settings
     });
 
@@ -32,7 +31,7 @@ module.exports = class BotInfo extends Plugin {
 
     powercord.api.connections.registerConnection({
       type: 'discord-bot',
-      name: 'discord.bot',
+      name: 'top.gg',
       color: '#7289da',
       icon: {
         color: 'https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png',
@@ -44,7 +43,7 @@ module.exports = class BotInfo extends Plugin {
           if (!id) {
             ({
               id
-            } = (await getModule(['getCurrentUser'])).getCurrentUser());
+            } = (await getModule([ 'getCurrentUser' ])).getCurrentUser());
           }
 
           const bot = await this.fetchBot(id);
@@ -56,18 +55,18 @@ module.exports = class BotInfo extends Plugin {
             verified: !!bot.user.details.verified
           });
         } catch (e) {
-          //Just ignore the error, probably just 404
+          // Just ignore the error, probably just 404
         }
       },
       getPlatformUserUrl: (account) => {
         const slug = account.id;
-        return `https://dsc.bot/${encodeURIComponent(slug)}`;
+        return `https://top.gg/api/bots/${slug}}`;
       },
       onDisconnect: () => void 0
     });
   }
 
-  pluginWillUnload() {
+  pluginWillUnload () {
     uninject('discord-bot-user-tab-bar');
     uninject('discord-bot-user-body');
     uninject('discord-bot-user-header');
@@ -78,18 +77,18 @@ module.exports = class BotInfo extends Plugin {
     forceUpdateElement(this.classes.header);
   }
 
-  async fetchBot(id) {
-    return await get(`https://api.discord.bot/user/details/${id}`)
+  async fetchBot (id) {
+    return await get(`https://top.gg/api/bots/${id}`)
       .then(r => r.body && r.body.payload);
   }
 
-  async _patchUserProfile() {
+  async _patchUserProfile () {
     const { classes } = this;
     const instance = getOwnerInstance((await waitFor([
       classes.modal, classes.headerInfo, classes.nameTag
     ].join(' '))).parentElement);
 
-    const { tabBarItem } = await getModule(['tabBarItem']);
+    const { tabBarItem } = await getModule([ 'tabBarItem' ]);
 
     const UserProfileBody = instance._reactInternalFiber.return.type;
     const _this = this;
@@ -97,18 +96,20 @@ module.exports = class BotInfo extends Plugin {
     inject('discord-bot-user-tab-bar', UserProfileBody.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props;
 
-      //Don't bother rendering if there's no tab bar, user or if the user is a bot
-      if (!res || !user || user.bot) return res;
+      // Don't bother rendering if there's no tab bar, user or if the user is a bot
+      if (!res || !user || user.bot) {
+        return res;
+      }
 
-      //Create discord.bot tab bar item
+      // Create top.gg tab bar item
       const botTab = React.createElement(TabBar.Item, {
-        key: 'DISCORD_BIO',
+        key: 'DISCORD_BOT',
         className: tabBarItem,
-        id: 'DISCORD_BIO'
+        id: 'DISCORD_BOT'
       }, 'Bot');
 
-      //Add the discord.bot tab bar item to the list
-      res.props.children.props.children.push(botTab)
+      // Add the top.gg tab bar item to the list
+      res.props.children.props.children.push(botTab);
 
       return res;
     });
@@ -119,24 +120,28 @@ module.exports = class BotInfo extends Plugin {
       const fetchBot = (id) => _this.fetchBot(id);
       const getSetting = (setting, defaultValue) => _this.settings.get(setting, defaultValue);
 
-      if (section !== 'DISCORD_BIO') return res;
+      if (section !== 'DISCORD_BOT') {
+        return res;
+      }
 
       const body = children.props.children[1];
       body.props.children = [];
 
-      body.props.children.push(React.createElement(DiscordBot, { id: user.id, fetchBot, getSetting }));
+      body.props.children.push(React.createElement(DiscordBot, { id: user.id,
+        fetchBot,
+        getSetting }));
 
       return res;
     });
 
     /*
-    TOOD: Will have to see how to implement this properly because fetching the bot is async but we can't inject async
-    inject('discord-bot-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
-      const { user } = this.props;
-      const bot = await _this.fetchBot(user.id);
-
-      return res;
-    });
-    */
+     *TOOD: Will have to see how to implement this properly because fetching the bot is async but we can't inject async
+     *inject('discord-bot-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
+     *  const { user } = this.props;
+     *  const bot = await _this.fetchBot(user.id);
+     *
+     *  return res;
+     *});
+     */
   }
-}
+};

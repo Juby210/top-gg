@@ -2,8 +2,8 @@ const { React, getModule } = require('powercord/webpack');
 const { SwitchItem, SelectInput } = require('powercord/components/settings');
 
 module.exports = class DiscordBotSettings extends React.PureComponent {
-  render() {
-    const moment = getModule(['momentProperties'], false);
+  render () {
+    const moment = getModule([ 'momentProperties' ], false);
     const { getSetting, updateSetting } = this.props;
 
     const currentDate = moment()
@@ -19,7 +19,7 @@ module.exports = class DiscordBotSettings extends React.PureComponent {
         <SwitchItem
           value={getSetting('show-banner', true)}
           onChange={() => toggleSetting('show-banner', true)}
-          note="Shows the user's discord.bot banner if they have one. Also add the '.banner' utility CSS class to the header of the user profile modal."
+          note="Shows the user's top.gg banner if they have one. Also add the '.banner' utility CSS class to the header of the user profile modal."
         >
           Show Banner
         </SwitchItem>*/}
@@ -28,12 +28,18 @@ module.exports = class DiscordBotSettings extends React.PureComponent {
           searchable={false}
           value={getSetting('date-format', 'DD.MM.YYYY')}
           options={[
-            { label: 'DD.MM.YYYY', value: 'DD.MM.YYYY' },
-            { label: 'MM.DD.YYYY', value: 'MM.DD.YYYY' },
-            { label: 'DD/MM/YYYY', value: 'DD/MM/YYYY' },
-            { label: 'MM/DD/YYYY', value: 'MM/DD/YYYY' },
-            { label: 'YYYY-MM-DD', value: 'YYYY-MM-DD' },
-            { label: `Locale Date (${currentDate})`, value: 'llll' },
+            { label: 'DD.MM.YYYY',
+              value: 'DD.MM.YYYY' },
+            { label: 'MM.DD.YYYY',
+              value: 'MM.DD.YYYY' },
+            { label: 'DD/MM/YYYY',
+              value: 'DD/MM/YYYY' },
+            { label: 'MM/DD/YYYY',
+              value: 'MM/DD/YYYY' },
+            { label: 'YYYY-MM-DD',
+              value: 'YYYY-MM-DD' },
+            { label: `Locale Date (${currentDate})`,
+              value: 'llll' }
           ]}
           onChange={(t) => updateSetting('date-format', t.value)}
         >

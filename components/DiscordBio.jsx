@@ -2,7 +2,7 @@ const {
   React,
   getModule,
   i18n: { Messages },
-  getModuleByDisplayName,
+  getModuleByDisplayName
 } = require('powercord/webpack');
 const { Spinner, Text, Flex } = require('powercord/components');
 const AsyncComponent = require('powercord/components/AsyncComponent');
@@ -10,27 +10,29 @@ const AsyncComponent = require('powercord/components/AsyncComponent');
 const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
 const Anchor = AsyncComponent.from(getModuleByDisplayName('Anchor'));
 
-const { AdvancedScrollerThin } = getModule(['AdvancedScrollerThin'], false);
+const { AdvancedScrollerThin } = getModule([ 'AdvancedScrollerThin' ], false);
 
-const Genders = ['Male', 'Female', 'Nonbinary', 'Undisclosed'];
+const Genders = [ 'Male', 'Female', 'Nonbinary', 'Undisclosed' ];
 
 class Section extends React.PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.classes = {
-      ...getModule(['marginBottom8'], false),
+      ...getModule([ 'marginBottom8' ], false)
     };
   }
 
-  render() {
+  render () {
     const { children, title } = this.props;
 
-    if (!children) return null;
+    if (!children) {
+      return null;
+    }
 
     return (
       <FormSection
-        className={this.classes.marginBottom8 + ' bot-section'}
+        className={`${this.classes.marginBottom8} bot-section`}
         tag='h5'
         title={title}
       >
@@ -41,22 +43,22 @@ class Section extends React.PureComponent {
 }
 
 module.exports = class DiscordBot extends React.PureComponent {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.classes = {
-      empty: getModule(['body', 'empty'], false).empty,
-      nelly: getModule(['flexWrapper', 'image'], false).image,
-      ...getModule(['emptyIcon'], false),
+      empty: getModule([ 'body', 'empty' ], false).empty,
+      nelly: getModule([ 'flexWrapper', 'image' ], false).image,
+      ...getModule([ 'emptyIcon' ], false)
     };
 
     this.state = {
-      streamerMode: getModule(['hidePersonalInformation'], false)
-        .hidePersonalInformation,
+      streamerMode: getModule([ 'hidePersonalInformation' ], false)
+        .hidePersonalInformation
     };
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     const { fetchBot, id } = this.props;
 
     try {
@@ -68,9 +70,9 @@ module.exports = class DiscordBot extends React.PureComponent {
           this.setState({
             error: {
               message:
-                "Looks like this person doesn't have a discord.bot profile",
-              icon: this.classes.emptyIconFriends,
-            },
+                'Looks like this person doesn\'t have a top.gg profile',
+              icon: this.classes.emptyIconFriends
+            }
           });
           break;
         }
@@ -78,16 +80,16 @@ module.exports = class DiscordBot extends React.PureComponent {
           this.setState({
             error: {
               message:
-                'Woah there buddy! You hit the rate limit. Maybe… try slowing down?',
-            },
+                'Woah there buddy! You hit the rate limit. Maybe… try slowing down?'
+            }
           });
           break;
         }
         default: {
           this.setState({
             error: {
-              message: 'An unknown error occurred. Maybe try again later?',
-            },
+              message: 'An unknown error occurred. Maybe try again later?'
+            }
           });
           break;
         }
@@ -95,8 +97,8 @@ module.exports = class DiscordBot extends React.PureComponent {
     }
   }
 
-  render() {
-    const moment = getModule(['momentProperties'], false);
+  render () {
+    const moment = getModule([ 'momentProperties' ], false);
     const { bot, error, streamerMode } = this.state;
     const { getSetting } = this.props;
 
@@ -114,7 +116,7 @@ module.exports = class DiscordBot extends React.PureComponent {
 
       return (
         <div className={this.classes.empty}>
-          <div className={(icon || this.classes.nelly) + ' error-icon'} />
+          <div className={`${icon || this.classes.nelly} error-icon`} />
           <div className={this.classes.emptyText}>{message}</div>
         </div>
       );
@@ -124,48 +126,47 @@ module.exports = class DiscordBot extends React.PureComponent {
           <Spinner />
         </div>
       );
-    } else {
-      const {
-        description,
-        gender,
-        location,
-        email,
-        occupation,
-        birthday,
-        created_at,
-      } = bot.user.details;
+    }
+    const {
+      description,
+      gender,
+      location,
+      email,
+      occupation,
+      birthday,
+      created_at
+    } = bot.user.details;
 
-      return (
-        <AdvancedScrollerThin className='discord-bot' fade={true}>
-          <Flex justify={Flex.Justify.START} wrap={Flex.Wrap.WRAP}>
-            <Section title='Description'>{description}</Section>
-            <Section title='Gender'>{Genders[gender]}</Section>
-            <Section title='Location'>{location}</Section>
-            <Section title='Occupation'>{occupation}</Section>
-            {birthday && (
-              <Section title='Birthday'>
-                {moment(birthday)
-                  .startOf('day')
-                  .format(getSetting('date-format', 'DD.MM.YYYY'))
-                  /* I know this is quick and dirty but you can't stop me MUAHAHAHA */
-                  .replace(' 12:00 AM', '')}
-              </Section>
-            )}
-            <Section title='Created At'>
-              {moment(created_at)
+    return (
+      <AdvancedScrollerThin className='discord-bot' fade={true}>
+        <Flex justify={Flex.Justify.START} wrap={Flex.Wrap.WRAP}>
+          <Section title='Description'>{description}</Section>
+          <Section title='Gender'>{Genders[gender]}</Section>
+          <Section title='Location'>{location}</Section>
+          <Section title='Occupation'>{occupation}</Section>
+          {birthday && (
+            <Section title='Birthday'>
+              {moment(birthday)
                 .startOf('day')
                 .format(getSetting('date-format', 'DD.MM.YYYY'))
-                /* I know this is quick and dirty but you can't stop me MUAHAHAHA */
+              /* I know this is quick and dirty but you can't stop me MUAHAHAHA */
                 .replace(' 12:00 AM', '')}
             </Section>
-            {email && (
-              <Section title='E-Mail'>
-                <Anchor href={`mailto:${email}`}>{email}</Anchor>
-              </Section>
-            )}
-          </Flex>
-        </AdvancedScrollerThin>
-      );
-    }
+          )}
+          <Section title='Created At'>
+            {moment(created_at)
+              .startOf('day')
+              .format(getSetting('date-format', 'DD.MM.YYYY'))
+            /* I know this is quick and dirty but you can't stop me MUAHAHAHA */
+              .replace(' 12:00 AM', '')}
+          </Section>
+          {email && (
+            <Section title='E-Mail'>
+              <Anchor href={`mailto:${email}`}>{email}</Anchor>
+            </Section>
+          )}
+        </Flex>
+      </AdvancedScrollerThin>
+    );
   }
 };

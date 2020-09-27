@@ -1,10 +1,10 @@
 # Discord.bot
 
-A powercord plugin that shows a users' details from [discord.bot](https://discord.bot) on the profile modal.
+A powercord plugin that shows a users' details from [top.gg](https://top.gg) on the profile modal.
 
 To use the plugin, it is highly recommended that you `git clone` this repo, as Discord does tend to change how components are rendered and added to to the client.
 
-This plugin adds a connection to the discord.bot profile page on the connections tab, and adds a new tab to the profile modal which has the data retrieved from the [discord.bot](https://discord.bot) api.
+This plugin adds a connection to the top.gg profile page on the connections tab, and adds a new tab to the profile modal which has the data retrieved from the [top.gg](https://top.gg) api.
 
 ### Issues and Suggestions
 
@@ -14,5 +14,5 @@ Alternatively you can get in touch with either [Amie](https://dsc.bot/amie) or [
 
 ### Features to be Added
 
- - Connections on discord.bot showing in the connections on the users profile.
- - Badges from discord.bot showing in the badges area on the users profile.
+ - Connections on top.gg showing in the connections on the users profile.
+ - Badges from top.gg showing in the badges area on the users profile.
