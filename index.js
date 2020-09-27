@@ -2,12 +2,10 @@ const { Plugin } = require('powercord/entities');
 const { React, getModule, getAllModules } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
-const { get } = require('powercord/http');
 const { TabBar } = require('powercord/components');
 
 const DiscordBot = require('./components/DiscordBot');
-const Settings = require('./components/Settings');
-const Fetcher = require('./handler')
+const Fetcher = require('./handler');
 module.exports = class BotInfo extends Plugin {
   async startPlugin () {
     this.classes = {
@@ -20,12 +18,6 @@ module.exports = class BotInfo extends Plugin {
       key => this.classes[key] = `.${this.classes[key].split(' ')[0]}`
     );
 
-    powercord.api.settings.registerSettings('discord-bot', {
-      category: 'discord-bot',
-      label: 'top.gg',
-      render: Settings
-    });
-
     this.loadStylesheet('style.scss');
     this._patchUserProfile();
   }
@@ -35,10 +27,7 @@ module.exports = class BotInfo extends Plugin {
     uninject('discord-bot-user-body');
     uninject('discord-bot-user-header');
 
-    powercord.api.settings.unregisterSettings('discord-bot');
-
     forceUpdateElement(this.classes.header);
-    Fetcher.stop();
   }
 
   async _patchUserProfile () {

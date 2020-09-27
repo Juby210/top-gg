@@ -1,46 +1,11 @@
 const {
   React,
   getModule,
-  i18n: { Messages },
-  getModuleByDisplayName
+  i18n: { Messages }
 } = require('powercord/webpack');
 const { Spinner, Text, Flex } = require('powercord/components');
-const AsyncComponent = require('powercord/components/AsyncComponent');
-
-const FormSection = AsyncComponent.from(getModuleByDisplayName('FormSection'));
-const Anchor = AsyncComponent.from(getModuleByDisplayName('Anchor'));
 
 const { AdvancedScrollerThin } = getModule([ 'AdvancedScrollerThin' ], false);
-
-const Genders = [ 'Male', 'Female', 'Nonbinary', 'Undisclosed' ];
-
-class Section extends React.PureComponent {
-  constructor (props) {
-    super(props);
-
-    this.classes = {
-      ...getModule([ 'marginBottom8' ], false)
-    };
-  }
-
-  render () {
-    const { children, title } = this.props;
-
-    if (!children) {
-      return null;
-    }
-
-    return (
-      <FormSection
-        className={`${this.classes.marginBottom8} bot-section`}
-        tag='h5'
-        title={title}
-      >
-        <Text selectable={true}>{children}</Text>
-      </FormSection>
-    );
-  }
-}
 
 module.exports = class DiscordBot extends React.PureComponent {
   constructor (props) {
@@ -62,7 +27,6 @@ module.exports = class DiscordBot extends React.PureComponent {
     const { fetchBot, id } = this.props;
 
     const bot = await fetchBot(id);
-    console.log(bot);
     if (!bot) {
       this.setState({
         error: {
@@ -71,17 +35,13 @@ module.exports = class DiscordBot extends React.PureComponent {
           icon: this.classes.emptyIconFriends
         }
       });
-      console.log('404')
       return;
     }
     this.setState({ bot });
   }
 
   render () {
-    const moment = getModule([ 'momentProperties' ], false);
     const { bot, error, streamerMode } = this.state;
-    const { getSetting } = this.props;
-    console.log(bot);
     if (streamerMode) {
       return (
         <div className={this.classes.empty}>
@@ -125,7 +85,7 @@ module.exports = class DiscordBot extends React.PureComponent {
     return (
       <AdvancedScrollerThin className='discord-bot' fade={true}>
         <Flex justify={Flex.Justify.START} wrap={Flex.Wrap.WRAP}>
-          <div dangerouslySetInnerHTML={{ __html: bot }} />
+          <Text dangerouslySetInnerHTML={{ __html: bot }} />
         </Flex>
       </AdvancedScrollerThin>
     );
