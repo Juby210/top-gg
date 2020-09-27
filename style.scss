@@ -1,6 +1,13 @@
 .discord-bot {
   padding: 20px 10px;
   height: 100%;
+  overflow-wrap: break-word;
+  object-fit: contain;
+}
+
+.discord-bot img {
+  max-width:100%;
+  max-height:100%;
 }
 
 .bot-section {

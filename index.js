@@ -7,7 +7,7 @@ const { TabBar } = require('powercord/components');
 
 const DiscordBot = require('./components/DiscordBot');
 const Settings = require('./components/Settings');
-
+const Fetcher = require('./handler')
 module.exports = class BotInfo extends Plugin {
   async startPlugin () {
     this.classes = {
@@ -26,7 +26,7 @@ module.exports = class BotInfo extends Plugin {
       render: Settings
     });
 
-    this.loadStylesheet('style.css');
+    this.loadStylesheet('style.scss');
     this._patchUserProfile();
   }
 
@@ -38,11 +38,6 @@ module.exports = class BotInfo extends Plugin {
     powercord.api.settings.unregisterSettings('discord-bot');
 
     forceUpdateElement(this.classes.header);
-  }
-
-  async fetchBot (id) {
-    return await get(`https://top.gg/api/bots/${id}`)
-      .then(r => r.body && r.body.payload);
   }
 
   async _patchUserProfile () {
@@ -60,7 +55,7 @@ module.exports = class BotInfo extends Plugin {
       const { user } = this.props;
 
       // Don't bother rendering if there's no tab bar, user or if the user is a bot
-      if (!res || !user || user.bot) {
+      if (!res || !user || !user.bot) {
         return res;
       }
 
@@ -80,7 +75,7 @@ module.exports = class BotInfo extends Plugin {
     inject('discord-bot-user-body', UserProfileBody.prototype, 'render', function (_, res) {
       const { children } = res.props;
       const { section, user } = this.props;
-      const fetchBot = (id) => _this.fetchBot(id);
+      const fetchBot = (id) => Fetcher.fetchBot(id);
       const getSetting = (setting, defaultValue) => _this.settings.get(setting, defaultValue);
 
       if (section !== 'DISCORD_BOT') {
