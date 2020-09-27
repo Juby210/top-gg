@@ -28,42 +28,6 @@ module.exports = class BotInfo extends Plugin {
 
     this.loadStylesheet('style.css');
     this._patchUserProfile();
-
-    powercord.api.connections.registerConnection({
-      type: 'discord-bot',
-      name: 'top.gg',
-      color: '#7289da',
-      icon: {
-        color: 'https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png',
-        white: 'https://discord.com/assets/e05ead6e6ebc08df9291738d0aa6986d.png'
-      },
-      enabled: true,
-      fetchAccount: async (id) => {
-        try {
-          if (!id) {
-            ({
-              id
-            } = (await getModule([ 'getCurrentUser' ])).getCurrentUser());
-          }
-
-          const bot = await this.fetchBot(id);
-
-          return ({
-            type: 'discord-bot',
-            id: bot.user.details.slug,
-            name: bot.discord.username,
-            verified: !!bot.user.details.verified
-          });
-        } catch (e) {
-          // Just ignore the error, probably just 404
-        }
-      },
-      getPlatformUserUrl: (account) => {
-        const slug = account.id;
-        return `https://top.gg/api/bots/${slug}}`;
-      },
-      onDisconnect: () => void 0
-    });
   }
 
   pluginWillUnload () {
@@ -71,7 +35,6 @@ module.exports = class BotInfo extends Plugin {
     uninject('discord-bot-user-body');
     uninject('discord-bot-user-header');
 
-    powercord.api.connections.unregisterConnection('discord-bot');
     powercord.api.settings.unregisterSettings('discord-bot');
 
     forceUpdateElement(this.classes.header);
