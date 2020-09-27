@@ -43,11 +43,21 @@ class Fetcher {
       // window.openDevTools();
       window.webContents.on('did-finish-load', () => {
         window.webContents.executeJavaScript(`
-                        while (!document.querySelector(".longdescription") && !document.querySelector(".error-banner-bottom")) {
-                        }
-                        require("electron").ipcRenderer.sendTo(${
+        function waitForElementToDisplay(selector, time) {
+            if(document.querySelector(selector)!=null) {
+                require("electron").ipcRenderer.sendTo(${
   remote.getCurrentWindow().webContents.id
 }, "discord-bot-info", (document.querySelector(".longdescription") || {}).innerHTML);
+                return;
+            }
+            else {
+                setTimeout(function() {
+                    waitForElementToDisplay(selector, time);
+                }, time);
+            }
+        }
+        waitForElementToDisplay('.longdescription, .error-banner-bottom', 100)
+
 `);
       });
       window.loadURL(
