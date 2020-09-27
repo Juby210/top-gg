@@ -7,6 +7,28 @@ const ipc = require('electron').ipcRenderer;
 class Fetcher {
   constructor () {
     this.cache = {};
+    ipc.on(
+      'discord-bot-info',
+      this.handleIPC
+    );
+  }
+
+  stop () {
+    ipc.removeListener(
+      'discord-bot-info',
+      this.handleIPC
+    );
+  }
+
+  handleIPC (event, message) {
+    try {
+      window.close();
+    } catch { }
+    console.log(message);
+    if (message) {
+      Promise.resolve(message);
+    }
+    Promise.resolve();
   }
 
   createWindow () {
@@ -25,19 +47,6 @@ class Fetcher {
       const window = this.createWindow();
       window.openDevTools();
       window.webContents.on('did-finish-load', () => {
-        ipc.on(
-          'discord-bot-info',
-          (event, message) => {
-            try {
-              window.close();
-            } catch { }
-            console.log(message);
-            if (message) {
-              resolve(message);
-            }
-            resolve();
-          }
-        );
         window.webContents.executeJavaScript(`
                         while (!document.querySelector(".longdescription") && !document.querySelector(".error-banner-bottom")) {
                         }

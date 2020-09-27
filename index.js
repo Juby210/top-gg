@@ -38,6 +38,7 @@ module.exports = class BotInfo extends Plugin {
     powercord.api.settings.unregisterSettings('discord-bot');
 
     forceUpdateElement(this.classes.header);
+    Fetcher.stop();
   }
 
   async _patchUserProfile () {
