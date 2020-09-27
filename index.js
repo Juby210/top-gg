@@ -5,7 +5,7 @@ const { inject, uninject } = require('powercord/injector');
 const { get } = require('powercord/http');
 const { TabBar } = require('powercord/components');
 
-const DiscordBio = require('./components/DiscordBio');
+const DiscordBot = require('./components/DiscordBot');
 const Settings = require('./components/Settings');
 
 module.exports = class BotInfo extends Plugin {
@@ -21,9 +21,9 @@ module.exports = class BotInfo extends Plugin {
       key => this.classes[key] = `.${this.classes[key].split(' ')[0]}`
     );
 
-    powercord.api.settings.registerSettings('discord-bio', {
-      category: 'discord-bio',
-      label: 'discord.bio',
+    powercord.api.settings.registerSettings('discord-bot', {
+      category: 'discord-bot',
+      label: 'discord.bot',
       render: Settings
     });
 
@@ -31,8 +31,8 @@ module.exports = class BotInfo extends Plugin {
     this._patchUserProfile();
 
     powercord.api.connections.registerConnection({
-      type: 'discord-bio',
-      name: 'discord.bio',
+      type: 'discord-bot',
+      name: 'discord.bot',
       color: '#7289da',
       icon: {
         color: 'https://discord.com/assets/28174a34e77bb5e5310ced9f95cb480b.png',
@@ -47,13 +47,13 @@ module.exports = class BotInfo extends Plugin {
             } = (await getModule(['getCurrentUser'])).getCurrentUser());
           }
 
-          const bio = await this.fetchBio(id);
+          const bot = await this.fetchBot(id);
 
           return ({
-            type: 'discord-bio',
-            id: bio.user.details.slug,
-            name: bio.discord.username,
-            verified: !!bio.user.details.verified
+            type: 'discord-bot',
+            id: bot.user.details.slug,
+            name: bot.discord.username,
+            verified: !!bot.user.details.verified
           });
         } catch (e) {
           //Just ignore the error, probably just 404
@@ -61,25 +61,25 @@ module.exports = class BotInfo extends Plugin {
       },
       getPlatformUserUrl: (account) => {
         const slug = account.id;
-        return `https://dsc.bio/${encodeURIComponent(slug)}`;
+        return `https://dsc.bot/${encodeURIComponent(slug)}`;
       },
       onDisconnect: () => void 0
     });
   }
 
   pluginWillUnload() {
-    uninject('discord-bio-user-tab-bar');
-    uninject('discord-bio-user-body');
-    uninject('discord-bio-user-header');
+    uninject('discord-bot-user-tab-bar');
+    uninject('discord-bot-user-body');
+    uninject('discord-bot-user-header');
 
-    powercord.api.connections.unregisterConnection('discord-bio');
-    powercord.api.settings.unregisterSettings('discord-bio');
+    powercord.api.connections.unregisterConnection('discord-bot');
+    powercord.api.settings.unregisterSettings('discord-bot');
 
     forceUpdateElement(this.classes.header);
   }
 
-  async fetchBio(id) {
-    return await get(`https://api.discord.bio/user/details/${id}`)
+  async fetchBot(id) {
+    return await get(`https://api.discord.bot/user/details/${id}`)
       .then(r => r.body && r.body.payload);
   }
 
@@ -94,29 +94,29 @@ module.exports = class BotInfo extends Plugin {
     const UserProfileBody = instance._reactInternalFiber.return.type;
     const _this = this;
 
-    inject('discord-bio-user-tab-bar', UserProfileBody.prototype, 'renderTabBar', function (_, res) {
+    inject('discord-bot-user-tab-bar', UserProfileBody.prototype, 'renderTabBar', function (_, res) {
       const { user } = this.props;
 
       //Don't bother rendering if there's no tab bar, user or if the user is a bot
       if (!res || !user || user.bot) return res;
 
-      //Create discord.bio tab bar item
-      const bioTab = React.createElement(TabBar.Item, {
+      //Create discord.bot tab bar item
+      const botTab = React.createElement(TabBar.Item, {
         key: 'DISCORD_BIO',
         className: tabBarItem,
         id: 'DISCORD_BIO'
-      }, 'Bio');
+      }, 'Bot');
 
-      //Add the discord.bio tab bar item to the list
-      res.props.children.props.children.push(bioTab)
+      //Add the discord.bot tab bar item to the list
+      res.props.children.props.children.push(botTab)
 
       return res;
     });
 
-    inject('discord-bio-user-body', UserProfileBody.prototype, 'render', function (_, res) {
+    inject('discord-bot-user-body', UserProfileBody.prototype, 'render', function (_, res) {
       const { children } = res.props;
       const { section, user } = this.props;
-      const fetchBio = (id) => _this.fetchBio(id);
+      const fetchBot = (id) => _this.fetchBot(id);
       const getSetting = (setting, defaultValue) => _this.settings.get(setting, defaultValue);
 
       if (section !== 'DISCORD_BIO') return res;
@@ -124,16 +124,16 @@ module.exports = class BotInfo extends Plugin {
       const body = children.props.children[1];
       body.props.children = [];
 
-      body.props.children.push(React.createElement(DiscordBio, { id: user.id, fetchBio, getSetting }));
+      body.props.children.push(React.createElement(DiscordBot, { id: user.id, fetchBot, getSetting }));
 
       return res;
     });
 
     /*
-    TOOD: Will have to see how to implement this properly because fetching the bio is async but we can't inject async
-    inject('discord-bio-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
+    TOOD: Will have to see how to implement this properly because fetching the bot is async but we can't inject async
+    inject('discord-bot-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
       const { user } = this.props;
-      const bio = await _this.fetchBio(user.id);
+      const bot = await _this.fetchBot(user.id);
 
       return res;
     });

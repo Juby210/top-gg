@@ -1,7 +1,7 @@
 const { React, getModule } = require('powercord/webpack');
 const { SwitchItem, SelectInput } = require('powercord/components/settings');
 
-module.exports = class DiscordBioSettings extends React.PureComponent {
+module.exports = class DiscordBotSettings extends React.PureComponent {
   render() {
     const moment = getModule(['momentProperties'], false);
     const { getSetting, updateSetting } = this.props;
@@ -13,18 +13,18 @@ module.exports = class DiscordBioSettings extends React.PureComponent {
       .replace(' 12:00 AM', '');
 
     return (
-      <div className='discord-bio-settings'>
+      <div className='discord-bot-settings'>
         {/*
         Outcommented while I figure out how we can make this work
         <SwitchItem
           value={getSetting('show-banner', true)}
           onChange={() => toggleSetting('show-banner', true)}
-          note="Shows the user's discord.bio banner if they have one. Also add the '.banner' utility CSS class to the header of the user profile modal."
+          note="Shows the user's discord.bot banner if they have one. Also add the '.banner' utility CSS class to the header of the user profile modal."
         >
           Show Banner
         </SwitchItem>*/}
         <SelectInput
-          note='Change the format of how dates are displayed in bios.'
+          note='Change the format of how dates are displayed in bots.'
           searchable={false}
           value={getSetting('date-format', 'DD.MM.YYYY')}
           options={[

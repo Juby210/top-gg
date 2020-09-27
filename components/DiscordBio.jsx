@@ -30,7 +30,7 @@ class Section extends React.PureComponent {
 
     return (
       <FormSection
-        className={this.classes.marginBottom8 + ' bio-section'}
+        className={this.classes.marginBottom8 + ' bot-section'}
         tag='h5'
         title={title}
       >
@@ -40,7 +40,7 @@ class Section extends React.PureComponent {
   }
 }
 
-module.exports = class DiscordBio extends React.PureComponent {
+module.exports = class DiscordBot extends React.PureComponent {
   constructor(props) {
     super(props);
 
@@ -57,18 +57,18 @@ module.exports = class DiscordBio extends React.PureComponent {
   }
 
   async componentDidMount() {
-    const { fetchBio, id } = this.props;
+    const { fetchBot, id } = this.props;
 
     try {
-      const bio = await fetchBio(id);
-      this.setState({ bio });
+      const bot = await fetchBot(id);
+      this.setState({ bot });
     } catch (e) {
       switch (e.statusCode) {
         case 404: {
           this.setState({
             error: {
               message:
-                "Looks like this person doesn't have a discord.bio profile",
+                "Looks like this person doesn't have a discord.bot profile",
               icon: this.classes.emptyIconFriends,
             },
           });
@@ -97,7 +97,7 @@ module.exports = class DiscordBio extends React.PureComponent {
 
   render() {
     const moment = getModule(['momentProperties'], false);
-    const { bio, error, streamerMode } = this.state;
+    const { bot, error, streamerMode } = this.state;
     const { getSetting } = this.props;
 
     if (streamerMode) {
@@ -118,7 +118,7 @@ module.exports = class DiscordBio extends React.PureComponent {
           <div className={this.classes.emptyText}>{message}</div>
         </div>
       );
-    } else if (!bio) {
+    } else if (!bot) {
       return (
         <div className={this.classes.empty}>
           <Spinner />
@@ -133,10 +133,10 @@ module.exports = class DiscordBio extends React.PureComponent {
         occupation,
         birthday,
         created_at,
-      } = bio.user.details;
+      } = bot.user.details;
 
       return (
-        <AdvancedScrollerThin className='discord-bio' fade={true}>
+        <AdvancedScrollerThin className='discord-bot' fade={true}>
           <Flex justify={Flex.Justify.START} wrap={Flex.Wrap.WRAP}>
             <Section title='Description'>{description}</Section>
             <Section title='Gender'>{Genders[gender]}</Section>
