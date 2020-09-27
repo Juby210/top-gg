@@ -8,7 +8,7 @@ const { TabBar } = require('powercord/components');
 const DiscordBio = require('./components/DiscordBio');
 const Settings = require('./components/Settings');
 
-module.exports = class Bio extends Plugin {
+module.exports = class BotInfo extends Plugin {
   async startPlugin() {
 
     this.classes = {
