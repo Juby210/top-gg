@@ -54,7 +54,7 @@ module.exports = class BotInfo extends Plugin {
         key: 'DISCORD_BOT',
         className: tabBarItem,
         id: 'DISCORD_BOT'
-      }, 'Bot');
+      }, 'Info');
 
       // Add the top.gg tab bar item to the list
       res.props.children.props.children.push(botTab);
