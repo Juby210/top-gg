@@ -71,18 +71,20 @@ module.exports = class DiscordBot extends React.PureComponent {
       );
     }
     return (
-      <Frame style={{ height:'100%',
+      <AdvancedScrollerThin style={{ height:'100%',
         width:'100%',
-        display: 'flex',
+        display: 'block',
         border: 'none',
-        margin: 0,
-        padding: 0 }} ><AdvancedScrollerThin style={{ height:'100%',
+        padding: 'none',
+        margin: 0 }} className='discord-bot' fade={true}>
+        <Frame style={{ height:'100%',
           width:'100%',
-          display: 'block',
           border: 'none',
-          padding: 'none',
-          margin: 0 }} className='discord-bot' fade={true}><Text dangerouslySetInnerHTML={{ __html: bot }}/></AdvancedScrollerThin>
-      </Frame>
+          margin: 0,
+          padding: 0 }} >
+          <Text dangerouslySetInnerHTML={{ __html: bot }}/>
+        </Frame>
+      </AdvancedScrollerThin>
     );
   }
 };
