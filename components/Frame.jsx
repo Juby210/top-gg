@@ -38,9 +38,5 @@ class Frame extends React.Component {
   componentDidUpdate () {
     this.renderFrameContents();
   }
-
-  componentWillUnmount () {
-    // React.unmountComponentAtNode(ReactDOM.findDOMNode(this).contentDocument.body);
-  }
 }
 module.exports = Frame;

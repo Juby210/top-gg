@@ -70,21 +70,6 @@ module.exports = class DiscordBot extends React.PureComponent {
         </div>
       );
     }
-    /*
-     * const {
-     *   description,
-     *   gender,
-     *   location,
-     *   email,
-     *   occupation,
-     *   birthday,
-     *   created_at
-     * } = bot.user.details;
-     * <Section title='Description'>{description}</Section>
-     * <Section title='Gender'>{Genders[gender]}</Section>
-     * <Section title='Location'>{location}</Section>
-     * <Section title='Occupation'>{occupation}</Section>
-     */
     return (
       <Frame style={{ height:'100%',
         width:'100%',
