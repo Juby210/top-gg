@@ -28,7 +28,6 @@ class Frame extends React.Component {
   renderFrameContents () {
     const doc = ReactDOM.findDOMNode(this).contentDocument;
     if (doc.readyState === 'complete') {
-      ReactDOM.render(this.props.children, doc.body);
       Array.prototype.forEach.call(document.querySelectorAll('link[rel=stylesheet]'), (link) => {
         const newLink = document.createElement('link');
         newLink.rel = link.rel;
@@ -50,11 +49,20 @@ class Frame extends React.Component {
             max-height:100%;
         }`;
       doc.head.appendChild(fixImages);
-      this.state.interval = setInterval(() => {
+      const func = _.debounce(() => {
+        this.setState({ height: `${doc.body.scrollHeight}px` });
+      }, 60, { leading:true,
+        trailing:true });
+      const scrollfix = () => {
         if (this.state.height !== `${doc.body.scrollHeight}px`) {
-          this.setState({ height: `${doc.body.scrollHeight}px` });
+          func();
         }
-      }, 100);
+      };
+      this.state.interval = setInterval(scrollfix, 30);
+      scrollfix();
+      setTimeout(() => {
+        ReactDOM.render(this.props.children, doc.body);
+      }, 200);
     } else {
       setTimeout(this.renderFrameContents, 0);
     }
