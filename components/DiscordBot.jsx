@@ -7,6 +7,9 @@ const { Spinner, Text, Flex } = require('powercord/components');
 
 const { AdvancedScrollerThin } = getModule([ 'AdvancedScrollerThin' ], false);
 
+const Frame = require('./Frame');
+
+
 module.exports = class DiscordBot extends React.PureComponent {
   constructor (props) {
     super(props);
@@ -83,11 +86,18 @@ module.exports = class DiscordBot extends React.PureComponent {
      * <Section title='Occupation'>{occupation}</Section>
      */
     return (
-      <AdvancedScrollerThin className='discord-bot' fade={true}>
-        <Flex justify={Flex.Justify.START} wrap={Flex.Wrap.WRAP}>
-          <Text dangerouslySetInnerHTML={{ __html: bot }} />
-        </Flex>
-      </AdvancedScrollerThin>
+      <Frame style={{ height:'100%',
+        width:'100%',
+        display: 'flex',
+        border: 'none',
+        margin: 0,
+        padding: 0 }} ><AdvancedScrollerThin style={{ height:'100%',
+          width:'100%',
+          display: 'block',
+          border: 'none',
+          padding: 'none',
+          margin: 0 }} className='discord-bot' fade={true}><Text dangerouslySetInnerHTML={{ __html: bot }}/></AdvancedScrollerThin>
+      </Frame>
     );
   }
 };
