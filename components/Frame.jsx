@@ -46,7 +46,6 @@ class Frame extends React.Component {
             object-fit: contain;}
         body * {
             max-width:100%;
-            max-height:100%;
         }`;
       doc.head.appendChild(fixImages);
       const func = _.debounce(() => {
