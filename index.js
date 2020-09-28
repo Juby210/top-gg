@@ -43,18 +43,20 @@ module.exports = class BotInfo extends Plugin {
       if (!res || !user || !user.bot) {
         return res;
       }
-
-      // Create top.gg tab bar item
-      const botTab = React.createElement(SVGBadge, {
-        id: user.id
-      });
-
       // Add the top.gg tab bar item to the list
-      const container = document.querySelector('.body-3iLsc4.thin-1ybCId.scrollerBase-289Jih.fade-2kXiP2 > div[aria-hidden="true"]')
-      container.style = '';
-      container.classList.add('discord-bot-svg-container');
-      ReactDOM.render(botTab, container);
+      if (!document.querySelector('.discord-bot-svg-container') && document.querySelector('.body-3iLsc4.thin-1ybCId.scrollerBase-289Jih.fade-2kXiP2')) {
+        // Create top.gg tab bar item
+        const botSVG = React.createElement(SVGBadge, {
+          id: user.id
+        });
 
+        const parent = document.querySelector('.body-3iLsc4.thin-1ybCId.scrollerBase-289Jih.fade-2kXiP2');
+        const container = document.createElement('div');
+        container.style = '';
+        container.classList.add('discord-bot-svg-container');
+        parent.append(container);
+        ReactDOM.render(botSVG, container);
+      }
       return res;
     });
     UserPopout.default.displayName = 'UserPopout';
