@@ -40,6 +40,16 @@ class Frame extends React.Component {
         newLink.innerHTML = link.innerHTML;
         doc.head.appendChild(newLink);
       });
+      const fixImages = document.createElement('style');
+      fixImages.innerHTML = `
+        body {
+            overflow-wrap: break-word;
+            object-fit: contain;}
+        body * {
+            max-width:100%;
+            max-height:100%;
+        }`;
+      doc.head.appendChild(fixImages);
       this.state.interval = setInterval(() => {
         if (this.state.height !== `${doc.body.scrollHeight}px`) {
           this.setState({ height: `${doc.body.scrollHeight}px` });
