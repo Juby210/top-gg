@@ -57,8 +57,8 @@ class Frame extends React.Component {
           func();
         }
       };
-      this.state.interval = setInterval(scrollfix, 30);
-      scrollfix();
+      this.state.interval = setInterval(scrollfix, 50);
+      setTimeout(scrollfix, 10);
       setTimeout(() => {
         ReactDOM.render(this.props.children, doc.body);
       }, 200);
