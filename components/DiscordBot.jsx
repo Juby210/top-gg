@@ -3,7 +3,7 @@ const {
   getModule,
   i18n: { Messages }
 } = require('powercord/webpack');
-const { Spinner, Text, Flex } = require('powercord/components');
+const { Spinner } = require('powercord/components');
 
 const { AdvancedScrollerThin } = getModule([ 'AdvancedScrollerThin' ], false);
 
@@ -82,7 +82,7 @@ module.exports = class DiscordBot extends React.PureComponent {
           border: 'none',
           margin: 0,
           padding: 0 }} >
-          <Text dangerouslySetInnerHTML={{ __html: bot }}/>
+          <div dangerouslySetInnerHTML={{ __html: bot }}/>
         </Frame>
       </AdvancedScrollerThin>
     );
