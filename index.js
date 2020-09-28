@@ -1,15 +1,17 @@
 const { Plugin } = require('powercord/entities');
-const { React, getModule, getAllModules } = require('powercord/webpack');
+const { React, ReactDOM, getModule, getModuleByDisplayName, getAllModules } = require('powercord/webpack');
 const { forceUpdateElement, getOwnerInstance, waitFor } = require('powercord/util');
 const { inject, uninject } = require('powercord/injector');
 const { TabBar } = require('powercord/components');
 
 const DiscordBot = require('./components/DiscordBot');
+const SVGBadge = require('./components/ProfileBadge');
 const Fetcher = require('./handler');
 module.exports = class BotInfo extends Plugin {
   async startPlugin () {
     this.classes = {
       ...await getModule([ 'headerInfo', 'nameTag' ]),
+      ...await getModule([ 'userPopout' ]),
       ...await getAllModules([ 'modal', 'inner' ])[1],
       header: (await getModule([ 'iconBackgroundTierNone', 'container' ])).header
     };
@@ -20,14 +22,51 @@ module.exports = class BotInfo extends Plugin {
 
     this.loadStylesheet('style.scss');
     this._patchUserProfile();
+    this._patchUserPopout();
   }
 
   pluginWillUnload () {
     uninject('discord-bot-user-tab-bar');
     uninject('discord-bot-user-body');
     uninject('discord-bot-user-header');
-
+    uninject('discord-bot-user-popout');
     forceUpdateElement(this.classes.header);
+  }
+
+  async _patchUserPopout () {
+    const UserPopout = await getModule(m => m.default && m.default.displayName === 'UserPopout');
+    console.log(UserPopout);
+    inject('discord-bot-user-popout', UserPopout, 'default', (_, res) => {
+      const { user } = res.props;
+      console.log(_, res);
+      // Don't bother rendering if there's no tab bar, user or if the user is a bot
+      if (!res || !user || !user.bot) {
+        return res;
+      }
+
+      // Create top.gg tab bar item
+      const botTab = React.createElement(SVGBadge, {
+        id: user.id
+      });
+
+      // Add the top.gg tab bar item to the list
+      const container = document.querySelector('.body-3iLsc4.thin-1ybCId.scrollerBase-289Jih.fade-2kXiP2 > div[aria-hidden="true"]')
+      container.style = '';
+      container.classList.add('discord-bot-svg-container');
+      ReactDOM.render(botTab, container);
+
+      return res;
+    });
+    UserPopout.default.displayName = 'UserPopout';
+    /*
+     *TOOD: Will have to see how to implement this properly because fetching the bot is async but we can't inject async
+     *inject('discord-bot-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
+     *  const { user } = this.props;
+     *  const bot = await _this.fetchBot(user.id);
+     *
+     *  return res;
+     *});
+     */
   }
 
   async _patchUserProfile () {
@@ -92,4 +131,14 @@ module.exports = class BotInfo extends Plugin {
      *});
      */
   }
+
+  /*
+   *TOOD: Will have to see how to implement this properly because fetching the bot is async but we can't inject async
+   *inject('discord-bot-user-header', UserProfileBody.prototype, 'renderHeader', function (_, res) {
+   *  const { user } = this.props;
+   *  const bot = await _this.fetchBot(user.id);
+   *
+   *  return res;
+   *});
+   */
 };
